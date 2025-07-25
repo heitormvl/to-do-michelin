@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("to-do-michelin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2970fab472a9069837d7fc56a683c2c1959214a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+332f89001df98025ad09f66a1d15dbc766402826")]
 [assembly: System.Reflection.AssemblyProductAttribute("to-do-michelin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("to-do-michelin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

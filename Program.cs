@@ -14,9 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+// builder.Services.AddFluentValidationAutoValidation();
+// builder.Services.AddFluentValidationClientsideAdapters();
+// builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddHttpContextAccessor();
@@ -31,7 +31,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("chave-super-secreta-bizarra"))
+                Encoding.UTF8.GetBytes("chave-super-secreta-bizarra-com-32-caracteres"))
         };
     });
 

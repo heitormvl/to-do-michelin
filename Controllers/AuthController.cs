@@ -22,7 +22,7 @@ namespace to_do_michelin.Controllers
                 new Claim(ClaimTypes.NameIdentifier, dto.Username)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("chave-super-secreta-bizarra"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("chave-super-secreta-bizarra-com-32-caracteres"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 claims: claims,
