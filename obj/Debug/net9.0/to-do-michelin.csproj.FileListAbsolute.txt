@@ -1,0 +1,8 @@
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.csproj.AssemblyReference.cache
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.AssemblyInfoInputs.cache
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.AssemblyInfo.cs
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.csproj.CoreCompileInputs.cache
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\davig\to-do-michelin\obj\Debug\net9.0\to-do-michelin.sourcelink.json
