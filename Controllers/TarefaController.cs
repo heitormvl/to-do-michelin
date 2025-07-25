@@ -2,68 +2,74 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using to_do_michelin.Models;
 using to_do_michelin.Services;
+using to_do_michelin.DTOs;
 
-[ApiController]
-[Route("tarefas")]
-[Authorize]
-public class TarefaController : ControllerBase
+namespace to_do_michelin.Controllers
 {
-    private readonly TarefaService _service;
-
-    public TarefaController(TarefaService service)
+    [ApiController]
+    [Route("tarefas")]
+    [Authorize]
+    public class TarefaController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly TarefaService _service;
 
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        var tarefas = await _service.ListarAsync();
-        return Ok(tarefas);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var tarefa = await _service.BuscarPorIdAsync(id);
-        if (tarefa == null) return NotFound();
-        return Ok(tarefa);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] TarefaCreateDTO dto)
-    {
-        var novaTarefa = new Tarefa
+        public TarefaController(TarefaService service)
         {
-            Titulo = dto.Titulo,
-            Descricao = dto.Descricao
-        };
+            _service = service;
+        }
 
-        var tarefa = await _service.CriarAsync(novaTarefa);
-        return CreatedAtAction(nameof(GetById), new { id = tarefa.Id }, tarefa);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Put(Guid id, [FromBody] TarefaCreateDTO dto)
-    {
-        var atualizada = new Tarefa
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-            Titulo = dto.Titulo,
-            Descricao = dto.Descricao
-        };
+            var tarefas = await _service.ListarAsync();
+            return Ok(tarefas);
+        }
 
-        var sucesso = await _service.AtualizarAsync(id, atualizada);
-        if (!sucesso) return NotFound();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var tarefa = await _service.BuscarPorIdAsync(id);
+            if (tarefa == null) return NotFound();
+            return Ok(tarefa);
+        }
 
-        return NoContent();
-    }
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] TarefaCreateDTO dto)
+        {
+            var novaTarefa = new Tarefa
+            {
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
+                UsuarioId = "temp" // Será substituído pelo service
+            };
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        var sucesso = await _service.DeletarAsync(id);
-        if (!sucesso) return NotFound();
+            var tarefa = await _service.CriarAsync(novaTarefa);
+            return CreatedAtAction(nameof(GetById), new { id = tarefa.Id }, tarefa);
+        }
 
-        return NoContent();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] TarefaCreateDTO dto)
+        {
+            var atualizada = new Tarefa
+            {
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
+                UsuarioId = "temp" // Será substituído pelo service
+            };
+
+            var sucesso = await _service.AtualizarAsync(id, atualizada);
+            if (!sucesso) return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var sucesso = await _service.DeletarAsync(id);
+            if (!sucesso) return NotFound();
+
+            return NoContent();
+        }
     }
 }

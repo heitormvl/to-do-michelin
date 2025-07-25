@@ -1,5 +1,8 @@
-public class TarefaCreateDTO
+namespace to_do_michelin.DTOs
 {
-    public string Titulo { get; set; }
-    public string Descricao { get; set; }
+    public class TarefaCreateDTO
+    {
+        public required string Titulo { get; set; }
+        public required string Descricao { get; set; }
+    }
 }

@@ -1,26 +1,28 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using FluentValidation;
 using FluentValidation.AspNetCore;
-using System.Text;
+using to_do_michelin.Services;
 using to_do_michelin.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<TarefaService>();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=toDoMichelin.db"));
 
+builder.Services.AddControllers();
 
-builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddScoped<TarefaService>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -34,6 +36,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDo API", Version = "v1" });
+});
 
 var app = builder.Build();
 

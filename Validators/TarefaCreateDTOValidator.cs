@@ -1,11 +1,15 @@
 using FluentValidation;
+using to_do_michelin.DTOs;
 
-public class TarefaCreateDTOValidator : AbstractValidator<TarefaCreateDTO>
+namespace to_do_michelin.Validators
 {
-    public TarefaCreateDTOValidator()
+    public class TarefaCreateDTOValidator : AbstractValidator<TarefaCreateDTO>
     {
-        RuleFor(x => x.Titulo)
-            .NotEmpty().WithMessage("O título é obrigatório")
-            .MinimumLength(3).WithMessage("Mínimo de 3 caracteres");
+        public TarefaCreateDTOValidator()
+        {
+            RuleFor(x => x.Titulo)
+                .NotEmpty().WithMessage("O título é obrigatório")
+                .MinimumLength(3).WithMessage("Mínimo de 3 caracteres");
+        }
     }
 }

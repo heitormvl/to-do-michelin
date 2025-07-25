@@ -1,10 +1,13 @@
 using System;
 
-public class TarefaReadDTO
+namespace to_do_michelin.DTOs
 {
-    public Guid Id { get; set; }
-    public string Titulo { get; set; }
-    public string Descricao { get; set; }
-    public bool Concluida { get; set; }
-    public DateTime DataCriacao { get; set; }
+    public class TarefaReadDTO
+    {
+        public Guid Id { get; set; }
+        public required string Titulo { get; set; }
+        public required string Descricao { get; set; }
+        public bool Concluida { get; set; }
+        public DateTime DataCriacao { get; set; }
+    }
 }

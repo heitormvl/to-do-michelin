@@ -14,9 +14,9 @@ namespace to_do_michelin.Services
             _httpContext = httpContext;
         }
 
-        private string ObterUsuarioId()
+        private string? ObterUsuarioId()
         {
-            return _httpContext.HttpContext.User.Identity.Name;
+            return _httpContext.HttpContext?.User?.Identity?.Name;
         }
 
         public async Task<List<Tarefa>> ListarAsync()
@@ -28,7 +28,7 @@ namespace to_do_michelin.Services
                 .ToListAsync();
         }
 
-        public async Task<Tarefa> BuscarPorIdAsync(Guid id)
+        public async Task<Tarefa?> BuscarPorIdAsync(Guid id)
         {
             var usuarioId = ObterUsuarioId();
             return await _context.Tarefas.FirstOrDefaultAsync(t => t.Id == id && t.UsuarioId == usuarioId);
@@ -36,7 +36,8 @@ namespace to_do_michelin.Services
 
         public async Task<Tarefa> CriarAsync(Tarefa tarefa)
         {
-            tarefa.UsuarioId = ObterUsuarioId();
+            var usuarioId = ObterUsuarioId() ?? "anonymous";
+            tarefa.UsuarioId = usuarioId;
             _context.Tarefas.Add(tarefa);
             await _context.SaveChangesAsync();
             return tarefa;
