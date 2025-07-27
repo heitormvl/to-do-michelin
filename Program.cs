@@ -14,9 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 
-// builder.Services.AddFluentValidationAutoValidation();
-// builder.Services.AddFluentValidationClientsideAdapters();
-// builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddHttpContextAccessor();

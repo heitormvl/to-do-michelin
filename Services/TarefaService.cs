@@ -1,4 +1,5 @@
 using to_do_michelin.Models;
+using to_do_michelin.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace to_do_michelin.Services
@@ -34,23 +35,28 @@ namespace to_do_michelin.Services
             return await _context.Tarefas.FirstOrDefaultAsync(t => t.Id == id && t.UsuarioId == usuarioId);
         }
 
-        public async Task<Tarefa> CriarAsync(Tarefa tarefa)
+        public async Task<Tarefa> CriarAsync(TarefaCreateDTO dto)
         {
             var usuarioId = ObterUsuarioId() ?? "anonymous";
-            tarefa.UsuarioId = usuarioId;
+            var tarefa = new Tarefa
+            {
+                Titulo = dto.Titulo,
+                Descricao = dto.Descricao,
+                UsuarioId = usuarioId
+            };
+            
             _context.Tarefas.Add(tarefa);
             await _context.SaveChangesAsync();
             return tarefa;
         }
 
-        public async Task<bool> AtualizarAsync(Guid id, Tarefa tarefaAtualizada)
+        public async Task<bool> AtualizarAsync(Guid id, TarefaCreateDTO dto)
         {
             var tarefa = await BuscarPorIdAsync(id);
             if (tarefa == null) return false;
 
-            tarefa.Titulo = tarefaAtualizada.Titulo;
-            tarefa.Descricao = tarefaAtualizada.Descricao;
-            tarefa.Concluida = tarefaAtualizada.Concluida;
+            tarefa.Titulo = dto.Titulo;
+            tarefa.Descricao = dto.Descricao;
 
             await _context.SaveChangesAsync();
             return true;

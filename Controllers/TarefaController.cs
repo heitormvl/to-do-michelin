@@ -36,28 +36,14 @@ namespace to_do_michelin.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] TarefaCreateDTO dto)
         {
-            var novaTarefa = new Tarefa
-            {
-                Titulo = dto.Titulo,
-                Descricao = dto.Descricao,
-                UsuarioId = "temp" // Será substituído pelo service
-            };
-
-            var tarefa = await _service.CriarAsync(novaTarefa);
+            var tarefa = await _service.CriarAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = tarefa.Id }, tarefa);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] TarefaCreateDTO dto)
         {
-            var atualizada = new Tarefa
-            {
-                Titulo = dto.Titulo,
-                Descricao = dto.Descricao,
-                UsuarioId = "temp" // Será substituído pelo service
-            };
-
-            var sucesso = await _service.AtualizarAsync(id, atualizada);
+            var sucesso = await _service.AtualizarAsync(id, dto);
             if (!sucesso) return NotFound();
 
             return NoContent();

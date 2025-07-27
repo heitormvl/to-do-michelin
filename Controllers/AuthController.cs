@@ -13,7 +13,7 @@ namespace to_do_michelin.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO dto)
         {
-            if (dto.Username != "admin" || dto.Password != "123")
+            if (dto.Username != "dabi" || dto.Password != "1327")
                 return Unauthorized("Credenciais inválidas.");
 
             var claims = new[]
