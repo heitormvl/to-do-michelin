@@ -50,13 +50,14 @@ namespace to_do_michelin.Services
             return tarefa;
         }
 
-        public async Task<bool> AtualizarAsync(Guid id, TarefaCreateDTO dto)
+        public async Task<bool> AtualizarAsync(TarefaUpdateDTO dto)
         {
-            var tarefa = await BuscarPorIdAsync(id);
+            var tarefa = await BuscarPorIdAsync(dto.Id);
             if (tarefa == null) return false;
 
             tarefa.Titulo = dto.Titulo;
             tarefa.Descricao = dto.Descricao;
+            tarefa.Concluida = dto.Concluida;
 
             await _context.SaveChangesAsync();
             return true;
