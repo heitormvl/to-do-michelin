@@ -19,14 +19,14 @@ namespace to_do_michelin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> ObterTarefas()
         {
             var tarefas = await _service.ListarAsync();
             return Ok(tarefas);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> ObterTarefas(Guid id)
         {
             var tarefa = await _service.BuscarPorIdAsync(id);
             if (tarefa == null) return NotFound();
@@ -34,23 +34,23 @@ namespace to_do_michelin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TarefaCreateDTO dto)
+        public async Task<IActionResult> AdicionarTarefas([FromBody] TarefaCreateDTO dto)
         {
             var tarefa = await _service.CriarAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = tarefa.Id }, tarefa);
+            return CreatedAtAction(nameof(AdicionarTarefas), new { id = tarefa.Id }, tarefa);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] TarefaCreateDTO dto)
+        [HttpPut]
+        public async Task<IActionResult> AtualizarTarefas([FromBody] TarefaUpdateDTO dto)
         {
-            var sucesso = await _service.AtualizarAsync(id, dto);
+            var sucesso = await _service.AtualizarAsync(dto);
             if (!sucesso) return NotFound();
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> ApagarTarefas(Guid id)
         {
             var sucesso = await _service.DeletarAsync(id);
             if (!sucesso) return NotFound();

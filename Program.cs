@@ -43,16 +43,28 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDo API", Version = "v1" });
     
+<<<<<<< HEAD
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+=======
+    // Adiciona a definição de segurança JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header usando o esquema Bearer. Exemplo: \"Authorization: Bearer {token}\"",
+>>>>>>> 26bf0dda6344faee7890325df21cca5005c028d9
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
+<<<<<<< HEAD
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
+=======
+    // Adiciona o requisito de segurança global
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+>>>>>>> 26bf0dda6344faee7890325df21cca5005c028d9
     {
         {
             new OpenApiSecurityScheme
@@ -61,9 +73,18 @@ builder.Services.AddSwaggerGen(c =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
+<<<<<<< HEAD
                 }
             },
             Array.Empty<string>()
+=======
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+>>>>>>> 26bf0dda6344faee7890325df21cca5005c028d9
         }
     });
 });
