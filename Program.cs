@@ -19,6 +19,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<TarefaService>();
+builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication("Bearer")
