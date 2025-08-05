@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using to_do_michelin.Services;
 using to_do_michelin.Models;
 using System.Text;
@@ -12,6 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=toDoMichelin.db"));
 
+// Configurar Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = false; // Para simplificar
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
 builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation();
@@ -19,7 +35,8 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<TarefaService>();
-builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<IdentityService>();
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication("Bearer")

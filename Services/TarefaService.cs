@@ -17,7 +17,7 @@ namespace to_do_michelin.Services
 
         private string? ObterUsuarioId()
         {
-            return _httpContext.HttpContext?.User?.Identity?.Name;
+            return _httpContext.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         }
 
         public async Task<List<Tarefa>> ListarAsync()
@@ -37,7 +37,10 @@ namespace to_do_michelin.Services
 
         public async Task<Tarefa> CriarAsync(TarefaCreateDTO dto)
         {
-            var usuarioId = ObterUsuarioId() ?? "anonymous";
+            var usuarioId = ObterUsuarioId();
+            if (string.IsNullOrEmpty(usuarioId))
+                throw new UnauthorizedAccessException("Usuário não autenticado");
+
             var tarefa = new Tarefa
             {
                 Titulo = dto.Titulo,

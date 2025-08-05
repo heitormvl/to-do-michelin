@@ -332,3 +332,8 @@ C:\Users\heito\Source\Repos\to-do-michelin\obj\Debug\net9.0\staticwebassets.upTo
 C:\Users\heito\Source\Repos\to-do-michelin\obj\Debug\net9.0\to-do-mi.B0FDDA5D.Up2Date
 C:\Users\heito\Source\Repos\to-do-michelin\obj\Debug\net9.0\to-do-michelin.genruntimeconfig.cache
 C:\Users\heito\Source\Repos\to-do-michelin\obj\Debug\net9.0\ref\to-do-michelin.dll
+C:\Users\davig\to-do-michelin\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\davig\to-do-michelin\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\davig\to-do-michelin\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\davig\to-do-michelin\bin\Debug\net9.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\davig\to-do-michelin\bin\Debug\net9.0\Microsoft.Extensions.Identity.Stores.dll

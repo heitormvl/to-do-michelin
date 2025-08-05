@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using to_do_michelin.Services;
 using to_do_michelin.DTOs;
 
@@ -13,96 +9,88 @@ namespace to_do_michelin.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly IdentityService _identityService;
 
-        public AuthController(UsuarioService usuarioService)
+        public AuthController(IdentityService identityService)
         {
-            _usuarioService = usuarioService;
+            _identityService = identityService;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
+        {
+            if (dto.Password != dto.ConfirmPassword)
+                return BadRequest("As senhas não coincidem");
+
+            var result = await _identityService.RegisterAsync(dto);
+            
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new { errors });
+            }
+
+            return Ok(new { message = "Usuário registrado com sucesso" });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
-            var isValid = await _usuarioService.ValidarCredenciaisAsync(dto.Username, dto.Password);
-            if (!isValid)
-                return Unauthorized("Credenciais inválidas.");
+            var (success, token, error) = await _identityService.LoginAsync(dto);
+            
+            if (!success)
+                return Unauthorized(new { error });
 
-            await _usuarioService.AtualizarUltimoLoginAsync(dto.Username);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, dto.Username),
-                new Claim(ClaimTypes.NameIdentifier, dto.Username)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("chave-super-secreta-bizarra-com-32-caracteres"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
-
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+            return Ok(new { token });
         }
 
         [HttpPost("logout")]
         [Authorize]
         public IActionResult Logout()
         {
-            // Em uma implementação real, você poderia invalidar o token
-            // Por enquanto, apenas retornamos sucesso
             return Ok(new { message = "Logout realizado com sucesso" });
         }
 
-        [HttpPost("redefinir-senha")]
-        public async Task<IActionResult> RedefinirSenha([FromBody] RedefinirSenhaDTO dto)
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
         {
-            var success = await _usuarioService.RedefinirSenhaAsync(dto);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var profile = await _identityService.GetUserProfileAsync(userId);
+            if (profile == null)
+                return NotFound();
+
+            return Ok(profile);
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var success = await _identityService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
+            
             if (!success)
-                return BadRequest("Não foi possível redefinir a senha. Verifique se o email está correto e se as senhas coincidem.");
+                return BadRequest("Não foi possível alterar a senha. Verifique se a senha atual está correta.");
+
+            return Ok(new { message = "Senha alterada com sucesso" });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
+        {
+            var success = await _identityService.ResetPasswordAsync(dto.Email, dto.NewPassword);
+            
+            if (!success)
+                return BadRequest("Não foi possível redefinir a senha. Verifique se o email está correto.");
 
             return Ok(new { message = "Senha redefinida com sucesso" });
         }
-
-        [HttpPost("registrar")]
-        public async Task<IActionResult> Registrar([FromBody] UsuarioCreateDTO dto)
-        {
-            var usuario = await _usuarioService.CriarAsync(dto);
-            if (usuario == null)
-                return BadRequest("Não foi possível criar o usuário. Verifique se o username ou email já não estão em uso.");
-
-            return CreatedAtAction(nameof(Registrar), usuario);
-        }
-
-        [HttpGet("perfil")]
-        [Authorize]
-        public async Task<IActionResult> ObterPerfil()
-        {
-            var username = User.Identity?.Name;
-            if (string.IsNullOrEmpty(username))
-                return Unauthorized();
-
-            var usuario = await _usuarioService.BuscarPorUsernameAsync(username);
-            if (usuario == null)
-                return NotFound();
-
-            var perfil = new UsuarioReadDTO
-            {
-                Id = usuario.Id,
-                Username = usuario.Username,
-                Email = usuario.Email,
-                DataCriacao = usuario.DataCriacao,
-                UltimoLogin = usuario.UltimoLogin,
-                Ativo = usuario.Ativo
-            };
-
-            return Ok(perfil);
-        }
-    }
-
-    public class LoginDTO
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
     }
 }
