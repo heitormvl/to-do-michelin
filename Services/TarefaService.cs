@@ -58,9 +58,14 @@ namespace to_do_michelin.Services
             var tarefa = await BuscarPorIdAsync(dto.Id);
             if (tarefa == null) return false;
 
-            tarefa.Titulo = dto.Titulo;
-            tarefa.Descricao = dto.Descricao;
-            tarefa.Concluida = dto.Concluida;
+            if (!string.IsNullOrEmpty(dto.Titulo))
+                tarefa.Titulo = dto.Titulo;
+                
+            if (dto.Descricao != null)
+                tarefa.Descricao = dto.Descricao;
+                
+            if (dto.Concluida.HasValue)
+                tarefa.Concluida = dto.Concluida.Value;
 
             await _context.SaveChangesAsync();
             return true;
