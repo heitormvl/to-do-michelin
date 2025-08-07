@@ -6,8 +6,10 @@ namespace to_do_michelin.DTOs
     {
         public Guid Id { get; set; }
         public required string Titulo { get; set; }
-        public required string Descricao { get; set; }
+        public string? Descricao { get; set; }
         public bool Concluida { get; set; }
         public DateTime DataCriacao { get; set; }
+        public string? UsuarioId { get; set; }
+        public string? UsuarioNome { get; set; }
     }
 }
