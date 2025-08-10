@@ -9,7 +9,7 @@ namespace to_do_michelin.Controllers
     [ApiController]
     [Route("tarefas")]
     [Authorize]
-    public class TarefaController : ControllerBase
+    public class TarefaController : BaseController
     {
         private readonly TarefaService _service;
 
@@ -24,19 +24,11 @@ namespace to_do_michelin.Controllers
             try
             {
                 var tarefas = await _service.ListarAsync();
-                return Ok(new { 
-                    success = true, 
-                    data = tarefas,
-                    message = $"Encontradas {tarefas.Count} tarefas"
-                });
+                return Success(tarefas, $"Encontradas {tarefas.Count} tarefas");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao listar tarefas",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao listar tarefas", new List<string> { ex.Message });
             }
         }
 
@@ -47,23 +39,13 @@ namespace to_do_michelin.Controllers
             {
                 var tarefa = await _service.BuscarPorIdAsync(id);
                 if (tarefa == null) 
-                    return NotFound(new { 
-                        success = false, 
-                        message = "Tarefa não encontrada" 
-                    });
+                    return NotFound("Tarefa não encontrada");
                     
-                return Ok(new { 
-                    success = true, 
-                    data = tarefa 
-                });
+                return Success(tarefa);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao buscar tarefa",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao buscar tarefa", new List<string> { ex.Message });
             }
         }
 
@@ -73,26 +55,21 @@ namespace to_do_michelin.Controllers
             try
             {
                 var tarefa = await _service.CriarAsync(dto);
-                return CreatedAtAction(nameof(ObterTarefa), new { id = tarefa.Id }, new { 
-                    success = true, 
-                    data = tarefa,
-                    message = "Tarefa criada com sucesso"
-                });
+                return CreatedAtAction(nameof(ObterTarefa), new { id = tarefa.Id }, 
+                    new RetornoModel<TarefaReadDTO>
+                    {
+                        Success = true,
+                        Message = "Tarefa criada com sucesso",
+                        Data = tarefa
+                    });
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized(new { 
-                    success = false, 
-                    message = "Usuário não autenticado" 
-                });
+                return Unauthorized("Usuário não autenticado");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao criar tarefa",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao criar tarefa", new List<string> { ex.Message });
             }
         }
 
@@ -103,23 +80,13 @@ namespace to_do_michelin.Controllers
             {
                 var sucesso = await _service.AtualizarAsync(dto);
                 if (!sucesso) 
-                    return NotFound(new { 
-                        success = false, 
-                        message = "Tarefa não encontrada ou não pertence ao usuário" 
-                    });
+                    return NotFound("Tarefa não encontrada ou não pertence ao usuário");
 
-                return Ok(new { 
-                    success = true, 
-                    message = "Tarefa atualizada com sucesso" 
-                });
+                return Success("Tarefa atualizada com sucesso");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao atualizar tarefa",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao atualizar tarefa", new List<string> { ex.Message });
             }
         }
 
@@ -130,23 +97,13 @@ namespace to_do_michelin.Controllers
             {
                 var sucesso = await _service.DeletarAsync(id);
                 if (!sucesso) 
-                    return NotFound(new { 
-                        success = false, 
-                        message = "Tarefa não encontrada ou não pertence ao usuário" 
-                    });
+                    return NotFound("Tarefa não encontrada ou não pertence ao usuário");
 
-                return Ok(new { 
-                    success = true, 
-                    message = "Tarefa excluída com sucesso" 
-                });
+                return Success("Tarefa excluída com sucesso");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao excluir tarefa",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao excluir tarefa", new List<string> { ex.Message });
             }
         }
 
@@ -156,19 +113,11 @@ namespace to_do_michelin.Controllers
             try
             {
                 var estatisticas = await _service.ObterEstatisticasAsync();
-                return Ok(new { 
-                    success = true, 
-                    data = estatisticas,
-                    message = "Estatísticas obtidas com sucesso"
-                });
+                return Success(estatisticas, "Estatísticas obtidas com sucesso");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao obter estatísticas",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao obter estatísticas", new List<string> { ex.Message });
             }
         }
 
@@ -179,24 +128,13 @@ namespace to_do_michelin.Controllers
             {
                 var tarefa = await _service.AlternarConclusaoAsync(id);
                 if (tarefa == null) 
-                    return NotFound(new { 
-                        success = false, 
-                        message = "Tarefa não encontrada ou não pertence ao usuário" 
-                    });
+                    return NotFound("Tarefa não encontrada ou não pertence ao usuário");
 
-                return Ok(new { 
-                    success = true, 
-                    data = tarefa,
-                    message = tarefa.Concluida ? "Tarefa marcada como concluída" : "Tarefa marcada como pendente"
-                });
+                return Success(tarefa, tarefa.Concluida ? "Tarefa marcada como concluída" : "Tarefa marcada como pendente");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { 
-                    success = false, 
-                    message = "Erro ao alternar status da tarefa",
-                    error = ex.Message 
-                });
+                return InternalServerError("Erro ao alternar status da tarefa", new List<string> { ex.Message });
             }
         }
     }

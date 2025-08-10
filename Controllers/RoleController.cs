@@ -7,7 +7,7 @@ namespace to_do_michelin.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(Roles = "Admin")]
-    public class RoleController : ControllerBase
+    public class RoleController : BaseController
     {
         private readonly RoleService _roleService;
 
@@ -21,14 +21,14 @@ namespace to_do_michelin.Controllers
         public async Task<IActionResult> InitializeRoles()
         {
             await _roleService.InitializeRolesAsync();
-            return Ok(new { message = "Roles inicializadas com sucesso" });
+            return Success("Roles inicializadas com sucesso");
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllRoles()
         {
             var roles = await _roleService.GetAllRolesAsync();
-            return Ok(roles);
+            return Success(roles);
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace to_do_michelin.Controllers
             if (!success)
                 return BadRequest("Role já existe ou não foi possível criar");
 
-            return Ok(new { message = $"Role '{roleName}' criada com sucesso" });
+            return Success($"Role '{roleName}' criada com sucesso");
         }
 
         [HttpDelete("{roleName}")]
@@ -48,7 +48,7 @@ namespace to_do_michelin.Controllers
             if (!success)
                 return BadRequest("Role não encontrada ou não foi possível deletar");
 
-            return Ok(new { message = $"Role '{roleName}' deletada com sucesso" });
+            return Success($"Role '{roleName}' deletada com sucesso");
         }
     }
 } 

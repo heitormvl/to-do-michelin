@@ -60,7 +60,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDo API", Version = "v1" });
     
-    // Adiciona a definição de segurança JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header usando o esquema Bearer. Exemplo: \"Authorization: Bearer {token}\"",
@@ -70,7 +69,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer"
     });
 
-    // Adiciona o requisito de segurança global
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {

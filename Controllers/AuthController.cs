@@ -7,7 +7,7 @@ namespace to_do_michelin.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IdentityService _identityService;
 
@@ -26,11 +26,11 @@ namespace to_do_michelin.Controllers
             
             if (!result.Succeeded)
             {
-                var errors = result.Errors.Select(e => e.Description);
-                return BadRequest(new { errors });
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest("Erro ao registrar usuário", errors);
             }
 
-            return Ok(new { message = "Usuário registrado com sucesso" });
+            return Success("Usuário registrado com sucesso");
         }
 
         [HttpPost("login")]
@@ -39,16 +39,16 @@ namespace to_do_michelin.Controllers
             var (success, token, error) = await _identityService.LoginAsync(dto);
             
             if (!success)
-                return Unauthorized(new { error });
+                return Unauthorized(error ?? "Credenciais inválidas");
 
-            return Ok(new { token });
+            return Success(new { token }, "Login realizado com sucesso");
         }
 
         [HttpPost("logout")]
         [Authorize]
         public IActionResult Logout()
         {
-            return Ok(new { message = "Logout realizado com sucesso" });
+            return Success("Logout realizado com sucesso");
         }
 
         [HttpGet("profile")]
@@ -57,13 +57,13 @@ namespace to_do_michelin.Controllers
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+                return Unauthorized("Usuário não autenticado");
 
             var profile = await _identityService.GetUserProfileAsync(userId);
             if (profile == null)
-                return NotFound();
+                return NotFound("Perfil não encontrado");
 
-            return Ok(profile);
+            return Success(profile);
         }
 
         [HttpPost("change-password")]
@@ -72,14 +72,14 @@ namespace to_do_michelin.Controllers
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+                return Unauthorized("Usuário não autenticado");
 
             var success = await _identityService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
             
             if (!success)
                 return BadRequest("Não foi possível alterar a senha. Verifique se a senha atual está correta.");
 
-            return Ok(new { message = "Senha alterada com sucesso" });
+            return Success("Senha alterada com sucesso");
         }
 
         [HttpPost("reset-password")]
@@ -90,7 +90,7 @@ namespace to_do_michelin.Controllers
             if (!success)
                 return BadRequest("Não foi possível redefinir a senha. Verifique se o email está correto.");
 
-            return Ok(new { message = "Senha redefinida com sucesso" });
+            return Success("Senha redefinida com sucesso");
         }
     }
 }
